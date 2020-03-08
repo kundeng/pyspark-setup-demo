@@ -1,0 +1,65 @@
+
+version: "3.7"
+networks:
+  demo-net:
+
+services:
+  spark:
+    build: ./docker_nbextensions
+    image: bayeslearner/all-spark-notebook-nbext:latest
+    ports:
+    - "8888:8888/tcp"
+    - "8887:4040/tcp"
+    networks:
+    - demo-net
+    working_dir: /home/$USER/work
+    environment:
+      CHOWN_HOME: "yes"
+      GRANT_SUDO: "yes"
+      NB_UID: $nb_uid
+      NB_GID: $nb_gid
+      NB_USER: $USER
+      NB_GROUP: $USER
+    user: root
+    # deploy:
+    #  replicas: 1
+    #  restart_policy:
+    #    condition: on-failure
+    volumes:
+    - $PWD/work:/home/$USER/work
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres1234
+      POSTGRES_DB: bakery
+    ports:
+    - "8886:5432/tcp"
+    networks:
+    - demo-net
+    volumes:
+    - $PWD/data/postgres:/var/lib/postgresql/data
+    # deploy:
+    #  restart_policy:
+    #    condition: on-failure
+  adminer:
+    image: adminer:latest
+    ports:
+    - "8885:8080/tcp"
+    networks:
+    - demo-net
+    # deploy:
+    #  restart_policy:
+    #    condition: on-failure
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: 5up3rS3cr3t!
+    ports:
+      - "8884:80/tcp"
+    networks:
+      - demo-net
+    # deploy:
+    #   restart_policy:
+    #     condition: on-failure

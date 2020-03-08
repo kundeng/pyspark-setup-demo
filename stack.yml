@@ -17,9 +17,9 @@ services:
       CHOWN_HOME: "yes"
       GRANT_SUDO: "yes"
       NB_UID: 1000
-      NB_GID: 100
+      NB_GID: 1000
       NB_USER: $USER
-      NB_GROUP: staff
+      NB_GROUP: $USER
     user: root
     deploy:
      replicas: 1
@@ -38,7 +38,7 @@ services:
     networks:
     - demo-net
     volumes:
-    - $HOME/data/postgres:/var/lib/postgresql/data
+    - $PWD/postgres:/var/lib/postgresql/data
     deploy:
      restart_policy:
        condition: on-failure
