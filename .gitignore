@@ -7,3 +7,4 @@ work/.empty/
 work/postgresql-42.2.8.jar
 work/.env
 **/.DS_Store
+data/
